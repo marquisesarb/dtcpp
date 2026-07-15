@@ -8,8 +8,8 @@ bool isClose(double value1, double value2, double eps) {return (std::abs(value2-
 
 void testYearFraction() {
 
-    using namespace dtcpp::objects;
-    using namespace dtcpp::finance;     
+    using namespace dtcpp;
+    using namespace dtcpp;     
 
     // 25 Août 2025 21:00:00 
     DateTime referenceTime = DateTime(1756155600,EpochTimestampType::SECONDS); 
@@ -56,8 +56,8 @@ void testYearFraction() {
 
 void testForwardDateTenor() {
 
-    using namespace dtcpp::objects;
-    using namespace dtcpp::finance; 
+    using namespace dtcpp;
+    using namespace dtcpp; 
     DateTime refDate(1769472000, EpochTimestampType::SECONDS);
     assert((Tenor{3,TenorType::MONTHS}.getForwardDate(refDate,1).getTimestamp() == 1777248000));
     assert((Tenor{1,TenorType::DAYS}.getForwardDate(refDate,1).getTimestamp() == 1769558400));
@@ -81,8 +81,8 @@ void testForwardDateTenor() {
 
 void testTenorOperators() {
 
-    using namespace dtcpp::objects;
-    using namespace dtcpp::finance; 
+    using namespace dtcpp;
+    using namespace dtcpp; 
     assert((Tenor{7, TenorType::DAYS}==Tenor{1, TenorType::WEEKS}));
     assert((Tenor{14, TenorType::DAYS}==Tenor{2, TenorType::WEEKS}));
 
@@ -99,8 +99,8 @@ void testTenorOperators() {
 
 void testTenorGetFactorMultiple() {
 
-    using namespace dtcpp::objects;
-    using namespace dtcpp::finance; 
+    using namespace dtcpp;
+    using namespace dtcpp; 
     // Months
     assert((Tenor{12,TenorType::MONTHS}.getMultiple(Tenor{3,TenorType::MONTHS}) == 4));
     assert((Tenor{12,TenorType::MONTHS}.getMultiple(Tenor{5,TenorType::MONTHS}) == 0));
@@ -132,28 +132,28 @@ void testTenorGetFactorMultiple() {
 
 void testBondScheduler() {
 
-    using namespace dtcpp::objects; 
-    using namespace dtcpp::finance; 
+    using namespace dtcpp; 
+    using namespace dtcpp; 
     Tenor tenorFreq{3,TenorType::MONTHS};
     Tenor tenorMaturity{5,TenorType::YEARS};
-    dtcpp::objects::DateTime startDate(2026,1,30);
-    dtcpp::bizdays::HolidayCalendar hcal = dtcpp::bizdays::HolidayCalendar::NONE; 
-    dtcpp::bizdays::BusinessDayConvention bdconv = dtcpp::bizdays::BusinessDayConvention::FOLLOWING; 
+    dtcpp::DateTime startDate(2026,1,30);
+    dtcpp::HolidayCalendar hcal = dtcpp::HolidayCalendar::NONE; 
+    dtcpp::BusinessDayConvention bdconv = dtcpp::BusinessDayConvention::FOLLOWING; 
 
-    dtcpp::objects::DatetimeSequence schedule = dtcpp::finance::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, false, false); 
+    dtcpp::DatetimeSequence schedule = dtcpp::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, false, false); 
     assert(schedule.size() == 19);
     assert(schedule.asVector()[7] == DateTime(2028,1,30)); 
     assert(schedule.asVector()[12] == DateTime(2029,4,30));
     assert(schedule.asVector()[13] == DateTime(2029,7,30));
 
-    schedule = dtcpp::finance::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, false); 
+    schedule = dtcpp::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, false); 
     assert(schedule.size() == 20);
     assert(schedule.asVector()[0] == startDate); 
     assert(schedule.asVector()[8] == DateTime(2028,1,30)); 
     assert(schedule.asVector()[13] == DateTime(2029,4,30));
     assert(schedule.asVector()[14] == DateTime(2029,7,30));
 
-    schedule = dtcpp::finance::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, true); 
+    schedule = dtcpp::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, true); 
     assert(schedule.size() == 21);
     assert(schedule.asVector()[0] == startDate); 
     assert(schedule.asVector()[8] == DateTime(2028,1,30)); 
@@ -162,13 +162,13 @@ void testBondScheduler() {
     assert(schedule.asVector()[20] == DateTime(2031,1,30));
 
     tenorFreq = {7,TenorType::MONTHS};
-    schedule = dtcpp::finance::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, true);
+    schedule = dtcpp::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, true);
     assert(schedule.size() == 2);
 
-    schedule = dtcpp::finance::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, false);
+    schedule = dtcpp::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, true, false);
     assert(schedule.size() == 1);
 
-    schedule = dtcpp::finance::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, false, false);
+    schedule = dtcpp::bondSchedule(startDate, tenorFreq,tenorMaturity, bdconv, hcal, false, false);
     assert(schedule.size() == 0);
 }
 

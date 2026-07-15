@@ -2,10 +2,10 @@
 #include <cassert>
 #include <dtcpp/objects.hpp>
 
-using namespace dtcpp::objects; 
+using namespace dtcpp; 
 
 void testTimeDelta() {
-    dtcpp::objects::TimeDelta delta = {1, 2, 3, 4, 500, 600, 700}; 
+    dtcpp::TimeDelta delta = {1, 2, 3, 4, 500, 600, 700}; 
 
     long long totalSeconds = delta.getTotalSeconds();
     assert(totalSeconds == 93784); 
@@ -29,7 +29,7 @@ void testTimeDelta() {
 }
 
 void testTimestampConstructor() {
-    using namespace dtcpp::objects; 
+    using namespace dtcpp; 
     DateTime dt1 = DateTime(1766939320,EpochTimestampType::SECONDS); 
     DateTime dt2 = DateTime(1766939320,EpochTimestampType::SECONDS, TimeZone::UTCP1);
     
@@ -57,7 +57,7 @@ void testTimestampConstructor() {
 }
 
 void testCivilConstructor() {
-    using namespace dtcpp::objects; 
+    using namespace dtcpp; 
     DateTime dt1 = DateTime(2025,12,28,16,28,40); 
     DateTime dt2 = DateTime(2025,12,28,17,28,40, TimeZone::UTCP1); 
 
@@ -87,7 +87,7 @@ void testCivilConstructor() {
 }
 
 void testStringConstructor() {
-    using namespace dtcpp::objects; 
+    using namespace dtcpp; 
     DateTime dt1 = DateTime("2025-12-28 16:28:40", "YYYY-MM-DD HH:MM:SS"); 
     DateTime dt2 = DateTime("2025-12-28 17:28:40", "YYYY-MM-DD HH:MM:SS", TimeZone::UTCP1); 
 
@@ -116,7 +116,7 @@ void testStringConstructor() {
 }
 
 void testOperators() {
-    using namespace dtcpp::objects; 
+    using namespace dtcpp; 
     DateTime dt1(1625097600, EpochTimestampType::SECONDS); 
     TimeDelta delta{0, 1, 0, 0, 0, 0, 0}; 
 

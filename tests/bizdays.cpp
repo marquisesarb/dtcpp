@@ -2,7 +2,7 @@
 #include <cassert>
 #include <dtcpp/bizdays.hpp>
 
-using namespace dtcpp::bizdays;
+using namespace dtcpp;
 
 void templateTestAdjBusinessDay(const HolidayCalendar& holiday, const BusinessDayConvention& bdc, const std::vector<int>& raw, const std::vector<int>& result) {
 

@@ -2,8 +2,6 @@
 #include <cassert>
 #include <dtcpp/toolbox.hpp>
 
-
-
 void testCheck() {
 
     assert(dtcpp::toolbox::isCivilDateValid(2025,10,12)==true); 
