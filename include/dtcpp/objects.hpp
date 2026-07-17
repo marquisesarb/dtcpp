@@ -216,8 +216,11 @@ namespace dtcpp {
         }
 
         std::optional<DateTime> start() const {if (datetimeSequence.empty()) return std::nullopt; return *datetimeSequence.begin();}
+
         std::optional<DateTime> end() const {if (datetimeSequence.empty()) return std::nullopt; return *datetimeSequence.rbegin();}
+
         bool isExisting(DateTime date) const {return datetimeSequence.find(date) != datetimeSequence.end();};
+
         int size() const { return datetimeSequence.size();}
 
         int index(const DateTime& date) const {
@@ -228,6 +231,7 @@ namespace dtcpp {
         }
 
         void add(const DateTime& date) { datetimeSequence.insert(date); }
+        
         void remove(const DateTime& date) { datetimeSequence.erase(date); }
 
     };
