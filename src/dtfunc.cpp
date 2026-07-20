@@ -1,9 +1,9 @@
-#include <dtcpp/objects.hpp>
+#include <dtcpp/datetime.hpp>
 #include <dtcpp/toolbox.hpp>
 
 namespace dtcpp {
 
-    DateTime DateTime::getModifiedTimestampType(EpochTimestampType type) const {
+    DateTime DateTime::switchTimestampType(EpochTimestampType type) const {
 
         if (type == type_) return *this;
 
@@ -17,11 +17,11 @@ namespace dtcpp {
         return DateTime(value, type, timeZone_);
     }
 
-    long long DateTime::getTimestamp() const { return tmsp_; }
+    long long DateTime::timestamp() const { return tmsp_; }
 
-    EpochTimestampType DateTime::getTimestampType() const { return type_; }
+    EpochTimestampType DateTime::timestampType() const { return type_; }
 
-    TimeZone DateTime::getTimeZone() const { return timeZone_; }
+    TimeZone DateTime::timeZone() const { return timeZone_; }
 
     std::string DateTime::asString(std::string dateFormat) const {
 
@@ -33,7 +33,7 @@ namespace dtcpp {
 
     void DateTime::setTimestampType(const EpochTimestampType type) {
 
-        tmsp_ = getModifiedTimestampType(type).getTimestamp(); 
+        tmsp_ = switchTimestampType(type).timestamp(); 
         type_ = type;
     }
 
@@ -59,10 +59,10 @@ namespace dtcpp {
         return value - hourOffset*3600LL;
     }
 
-    int DateTime::getYear() const { return std::get<0>(civilTime_); }
+    int DateTime::year() const { return std::get<0>(civilTime_); }
 
-    int DateTime::getDay() const { return std::get<2>(civilTime_); }
+    int DateTime::day() const { return std::get<2>(civilTime_); }
 
-    int DateTime::getMonth() const { return std::get<1>(civilTime_); }
+    int DateTime::month() const { return std::get<1>(civilTime_); }
 
 }

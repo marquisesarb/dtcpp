@@ -1,41 +1,41 @@
-#include <dtcpp/objects.hpp>
+#include <dtcpp/datetime.hpp>
 #include <dtcpp/toolbox.hpp>
 
 namespace dtcpp {
 
     DateTime DateTime::operator+(const TimeDelta& other) const {
 
-        long long tmsp = getTimestamp();
+        long long tmsp = timestamp();
         switch(type_){
-            case EpochTimestampType::SECONDS: {tmsp += other.getTotalSeconds(); break;}
-            case EpochTimestampType::MILLISECONDS: {tmsp += other.getTotalMilliSeconds(); break;}
-            case EpochTimestampType::MICROSECONDS: {tmsp += other.getTotalMicroSeconds(); break;}
-            case EpochTimestampType::NANOSECONDS: {tmsp += other.getTotalNanoSeconds(); break;}
+            case EpochTimestampType::SECONDS: {tmsp += other.totalSeconds(); break;}
+            case EpochTimestampType::MILLISECONDS: {tmsp += other.totalMilliseconds(); break;}
+            case EpochTimestampType::MICROSECONDS: {tmsp += other.totalMicroseconds(); break;}
+            case EpochTimestampType::NANOSECONDS: {tmsp += other.totalNanoseconds(); break;}
         }
         return DateTime(tmsp, type_, timeZone_);
     }
 
     DateTime DateTime::operator-(const TimeDelta& other) const {
 
-        long long tmsp = getTimestamp();
+        long long tmsp = timestamp();
         switch(type_){
-            case EpochTimestampType::SECONDS: {tmsp -= other.getTotalSeconds(); break;}
-            case EpochTimestampType::MILLISECONDS: {tmsp -= other.getTotalMilliSeconds(); break;}
-            case EpochTimestampType::MICROSECONDS: {tmsp -= other.getTotalMicroSeconds(); break;}
-            case EpochTimestampType::NANOSECONDS: {tmsp -= other.getTotalNanoSeconds(); break;}
+            case EpochTimestampType::SECONDS: {tmsp -= other.totalSeconds(); break;}
+            case EpochTimestampType::MILLISECONDS: {tmsp -= other.totalMilliseconds(); break;}
+            case EpochTimestampType::MICROSECONDS: {tmsp -= other.totalMicroseconds(); break;}
+            case EpochTimestampType::NANOSECONDS: {tmsp -= other.totalNanoseconds(); break;}
         }
         return DateTime(tmsp, type_, timeZone_);
     }
 
     TimeDelta DateTime::operator-(const DateTime& other) const {
 
-        long long nanoseconds = getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp() - other.getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp();
+        long long nanoseconds = switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp() - other.switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp();
         return {0,0,0,0,0,0,nanoseconds};
 
     }
 
     void DateTime::operator+=(const TimeDelta& other){ 
-        tmsp_ = operator+(other).getTimestamp(); 
+        tmsp_ = operator+(other).timestamp(); 
         civilTime_ = toolbox::getCivilFromTimestamp(
             _getModifiedTimestamp(
                 tmsp_
@@ -44,7 +44,7 @@ namespace dtcpp {
     }
 
     void DateTime::operator-=(const TimeDelta& other){ 
-        tmsp_ = operator-(other).getTimestamp(); 
+        tmsp_ = operator-(other).timestamp(); 
         civilTime_ = toolbox::getCivilFromTimestamp(
             _getModifiedTimestamp(
                 tmsp_
@@ -53,17 +53,17 @@ namespace dtcpp {
     }
 
     bool DateTime::operator==(const DateTime& other) const {
-        if (getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp()==other.getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp()) return true;
+        if (switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp()==other.switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp()) return true;
         return false;
     }
 
     bool DateTime::operator<(const DateTime& other) const {
-        if (getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp()<other.getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp()) return true;
+        if (switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp()<other.switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp()) return true;
         return false;
     }
 
     bool DateTime::operator<=(const DateTime& other) const {
-        if (getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp()<=other.getModifiedTimestampType(EpochTimestampType::NANOSECONDS).getTimestamp()) return true;
+        if (switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp()<=other.switchTimestampType(EpochTimestampType::NANOSECONDS).timestamp()) return true;
         return false;
     }
 
@@ -79,9 +79,9 @@ namespace dtcpp {
             std::get<0>(civilTime_)
             ,std::get<1>(civilTime_)
             ,std::get<2>(civilTime_)
-            ,other.years_);
+            ,other.years);
         TimeDelta dt = *this - DateTime(std::get<0>(civilTime_), std::get<1>(civilTime_), std::get<2>(civilTime_), timeZone_);
-        return DateTime(y,m,d,timeZone_).getModifiedTimestampType(type_) + dt;
+        return DateTime(y,m,d,timeZone_).switchTimestampType(type_) + dt;
     }
 
     DateTime DateTime::operator-(const TimeDelta::Years& other) const {
@@ -90,10 +90,10 @@ namespace dtcpp {
             std::get<0>(civilTime_)
             ,std::get<1>(civilTime_)
             ,std::get<2>(civilTime_)
-            ,-other.years_);
+            ,-other.years);
         
         TimeDelta dt = *this - DateTime(std::get<0>(civilTime_), std::get<1>(civilTime_), std::get<2>(civilTime_), timeZone_);
-        return DateTime(y,m,d,timeZone_).getModifiedTimestampType(type_) + dt;
+        return DateTime(y,m,d,timeZone_).switchTimestampType(type_) + dt;
     }
 
     DateTime DateTime::operator+(const TimeDelta::Months& other) const {
@@ -102,9 +102,9 @@ namespace dtcpp {
             std::get<0>(civilTime_)
             ,std::get<1>(civilTime_)
             ,std::get<2>(civilTime_)
-            ,other.months_);
+            ,other.months);
         TimeDelta dt = *this - DateTime(std::get<0>(civilTime_), std::get<1>(civilTime_), std::get<2>(civilTime_), timeZone_);
-        return DateTime(y,m,d,timeZone_).getModifiedTimestampType(type_) + dt;
+        return DateTime(y,m,d,timeZone_).switchTimestampType(type_) + dt;
     }
 
     DateTime DateTime::operator-(const TimeDelta::Months& other) const {
@@ -113,14 +113,14 @@ namespace dtcpp {
             std::get<0>(civilTime_)
             ,std::get<1>(civilTime_)
             ,std::get<2>(civilTime_)
-            ,-other.months_);
+            ,-other.months);
 
         TimeDelta dt = *this - DateTime(std::get<0>(civilTime_), std::get<1>(civilTime_), std::get<2>(civilTime_), timeZone_);
-        return DateTime(y,m,d,timeZone_).getModifiedTimestampType(type_) + dt;
+        return DateTime(y,m,d,timeZone_).switchTimestampType(type_) + dt;
     }
 
     void DateTime::operator+=(const TimeDelta::Years& other){
-        tmsp_ = operator+(other).getTimestamp(); 
+        tmsp_ = operator+(other).timestamp(); 
         civilTime_ = toolbox::getCivilFromTimestamp(
             _getModifiedTimestamp(
                 tmsp_
@@ -131,7 +131,7 @@ namespace dtcpp {
 
     void DateTime::operator-=(const TimeDelta::Years& other) {
         
-        tmsp_ = operator-(other).getTimestamp(); 
+        tmsp_ = operator-(other).timestamp(); 
         civilTime_ = toolbox::getCivilFromTimestamp(
             _getModifiedTimestamp(
                 tmsp_
@@ -141,7 +141,7 @@ namespace dtcpp {
 
     void DateTime::operator+=(const TimeDelta::Months& other) {
         
-        tmsp_ = operator+(other).getTimestamp(); 
+        tmsp_ = operator+(other).timestamp(); 
         civilTime_ = toolbox::getCivilFromTimestamp(
             _getModifiedTimestamp(
                 tmsp_
@@ -151,7 +151,7 @@ namespace dtcpp {
 
     void DateTime::operator-=(const TimeDelta::Months& other) {
         
-        tmsp_ = operator-(other).getTimestamp(); 
+        tmsp_ = operator-(other).timestamp(); 
         civilTime_ = toolbox::getCivilFromTimestamp(
             _getModifiedTimestamp(
                 tmsp_

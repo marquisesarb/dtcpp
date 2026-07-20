@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cassert>
 #include <dtcpp/toolbox.hpp>
 
@@ -133,6 +132,5 @@ int main() {
     testAddYears();
     testAddMonths();
     testConsistencyAddMonthYear();
-    std::cout << "All tests for the toolbox module have been passed succesfully!" << std::endl; 
     return 0;
 }

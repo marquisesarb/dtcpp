@@ -1,5 +1,4 @@
 #pragma once 
-#include <cassert>
 #include <chrono>
 
 namespace dtcpp {
@@ -30,8 +29,6 @@ namespace dtcpp {
 
         inline long long getDaysSinceEpoch(int year, int month, int day) {
 
-            //checkCivilDate(year,month,day);
-            assert(isCivilDateValid(year,month,day));
             year -= month <= 2;
             const int era = (year >= 0 ? year : year - 399) / 400;
             const unsigned yoe = static_cast<unsigned>(year - era * 400);
@@ -42,8 +39,6 @@ namespace dtcpp {
 
         inline long long getTimestampFromCivilDateHour(int year, int month, int day, int hour, int minute, int second) {
 
-            //checkCivilHour(hour,minute,second);
-            assert(isCivilHourValid(hour,minute,second));
             long long days = getDaysSinceEpoch(year, month, day);
             return days * 86400LL
                 + hour   * 3600LL
@@ -63,12 +58,8 @@ namespace dtcpp {
             else if (dateFormat == "YYYY-DD-MM HH:MM:SS") {sscanf(dateString.c_str(), "%d-%d-%d %d:%d:%d", &y, &d, &m, &h, &mi, &s);} 
             else if (dateFormat == "YYYY-MM-DD HH:MM:SS") {sscanf(dateString.c_str(), "%d-%d-%d %d:%d:%d", &y, &m, &d, &h, &mi, &s);} 
             else if (dateFormat == "YYYY/DD/MM HH:MM:SS") {sscanf(dateString.c_str(), "%d-%d-%d %d:%d:%d", &y, &d, &m, &h, &mi, &s);} 
-            else assert(false);
+            else return 0;
 
-            //checkCivilDate(y, m, d); 
-            //checkCivilHour(h, mi, s);
-            assert(isCivilDateValid(y,m,d));
-            assert(isCivilHourValid(h,mi,s));
             return getTimestampFromCivilDateHour(y,m,d,h,mi,s);
         }
 
@@ -98,12 +89,6 @@ namespace dtcpp {
             unsigned day = doy - (153*mp + 2)/5 + 1;               
             unsigned month = mp + (mp < 10 ? 3 : -9);                     
             int year = y + (month <= 2);
-
-            //checkCivilDate(year, month, day); 
-            //checkCivilHour(hour,minute,second);
-
-            assert(isCivilDateValid(year,month,day));
-            assert(isCivilHourValid(hour,minute,second));
 
             return std::make_tuple(year, month, day, hour, minute, second);
         }
@@ -189,21 +174,15 @@ namespace dtcpp {
 
         inline std::tuple<int, int, int> addYearsToCivilDate(int year, int month, int day, int n) {
 
-            // Optimized Algorithm by ChatGPT
             year += n;
 
             if (month == 2 && day == 29 && !isLeapYear(year)) {
                 day = 28;
             }
-
-            //checkCivilDate(year, month, day);
-            assert(isCivilDateValid(year, month, day));
             return std::make_tuple(year, month, day);
         }
 
         inline std::tuple<int, int, int> addMonthsToCivilDate(int year, int month, int day, int n) {
-
-            // Optimized Algorithm by ChatGPT
             int y = year;
             int m = month + n;
 
@@ -217,8 +196,6 @@ namespace dtcpp {
             int maxDay = getDaysInMonth(y, m);
             int d = std::min(day, maxDay);
 
-            //checkCivilDate(y, m, d);
-            assert(isCivilDateValid(y, m, d));
             return {y, m, d};
         }
     }
