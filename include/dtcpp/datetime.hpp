@@ -43,7 +43,7 @@ namespace dtcpp {
             DateTime(int year, int month, int day, TimeZone timeZone);
             DateTime(int year, int month, int day, int hour, int minute, int second);
             DateTime(int year, int month, int day);
-            DateTime(const std::string& dateString, const std::string&formatString, TimeZone timeZone);
+            DateTime(const std::string& dateString, const std::string& formatString, TimeZone timeZone);
             DateTime(const std::string& dateString, const std::string& formatString); 
             ~DateTime(){};
 

@@ -1,2 +1,0 @@
-# dtcpp
-Datetime C++ library

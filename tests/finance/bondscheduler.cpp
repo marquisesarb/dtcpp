@@ -24,5 +24,6 @@ int main() {
 
     schedule = dtcpp::fin::BondScheduler(startDate,tenorFreq,tenorMaturity, bdconv, hcal);
     assert(schedule.size() == 0);
+
     return 0;
 }
