@@ -98,6 +98,34 @@ namespace dtcpp {
                 return segment(istart, iend-istart+1);
             }
 
+            std::pair<TimeDelta,TimeDelta> minMaxTimeDelta() const {
+
+                TimeDelta dtmax{}; 
+                TimeDelta dtmin{};
+                
+                for (size_t i = 0; i<size();i++) {
+
+                    if (i==0) {
+
+                        continue; 
+
+                    } else if (i==1) {
+
+                        dtmax = dateSeq[i]-dateSeq[i-1];
+                        dtmin = dateSeq[i]-dateSeq[i-1];
+
+                    } else {
+
+                        dtmax = std::max(dtmax,dateSeq[i]-dateSeq[i-1]);
+                        dtmin = std::min(dtmin,dateSeq[i]-dateSeq[i-1]);
+
+                    }
+                }
+
+                return std::make_pair(dtmin,dtmax);
+
+            }
+
         private: 
             std::vector<dtcpp::DateTime> dateSeq; 
             std::vector<T> dataSeq; 
