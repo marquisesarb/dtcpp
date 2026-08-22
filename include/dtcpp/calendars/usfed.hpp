@@ -8,90 +8,80 @@ namespace dtcpp {
         public:
             USFederaReserveCalendar() {};
             virtual bool isBusinessDay(const DateTime& referenceDate) const {
-                int m = referenceDate.month(); 
-                int wk = toolbox::getWeekDayFromCivilDate(referenceDate.year(),referenceDate.month(),referenceDate.day()); 
+                std::tuple<int,int,int,int,int,int> civilTime_ = referenceDate.civilTime();
+                int y = std::get<0>(civilTime_), m = std::get<1>(civilTime_),d = std::get<2>(civilTime_);
+                int wk = toolbox::getWeekDayFromCivilDate(y,m,d); 
                 if (wk==6 or wk==0) return false;
                 if (m == 3 or m == 8 or m == 4) return true; 
 
-                if (isChristmas(referenceDate)) return false; 
-                if (isUSJuneteenth(referenceDate)) return false; 
-                if (isNewYear(referenceDate)) return false; 
-                if (isUSIndependanceDay(referenceDate)) return false; 
-                if (isUSVeteransDay(referenceDate)) return false; 
+                if (isChristmas(m,d)) return false; 
+                if (isUSJuneteenth(m,d)) return false; 
+                if (isNewYear(m,d)) return false; 
+                if (isUSIndependanceDay(m,d)) return false; 
+                if (isUSVeteransDay(m,d)) return false; 
 
                 if (wk==1) {
 
-                    if (m==1) { if (isMartinLutterKingDay(referenceDate)) return false;}
-                    if (m==2) { if (isUSWashingtonBirthday(referenceDate)) return false;} 
-                    if (m==5) { if (isUSMemorialDay(referenceDate)) return false;} 
-                    if (m==9) { if (isUSLaborDay(referenceDate)) return false;} 
-                    if (m==10) { if (isUSColumbusDay(referenceDate)) return false;} 
+                    if (m==1) { if (isMartinLutterKingDay(y,m,d)) return false;}
+                    if (m==2) { if (isUSWashingtonBirthday(y,m,d)) return false;} 
+                    if (m==5) { if (isUSMemorialDay(y,m,d)) return false;} 
+                    if (m==9) { if (isUSLaborDay(y,m,d)) return false;} 
+                    if (m==10) { if (isUSColumbusDay(y,m,d)) return false;} 
 
-                } else if (wk == 4) { if (isThanksgivingDay(referenceDate)) return false; }
+                } else if (wk == 4) { if (isThanksgivingDay(y,m,d)) return false; }
                 else return true;
                 return true;
             }; 
 
         private: 
-            static bool isWeekEnd(const DateTime& referenceDate) {
 
-                int wk = toolbox::getWeekDayFromCivilDate(referenceDate.year(),referenceDate.month(),referenceDate.day()); 
-                return (wk==6 or wk==0) ? true : false;
-            }
+            static bool isChristmas(int m, int d) { return (d==25 && m==12); }
 
-            static bool isChristmas(const DateTime& referenceDate) { return (referenceDate.day()==25 && referenceDate.month()==12); }
+            static bool isNewYear(int m, int d) { return (d==1 && m==1); }
 
-            static bool isNewYear(const DateTime& referenceDate) { return (referenceDate.day()==1 && referenceDate.month()==1); }
+            static bool isMartinLutterKingDay(int y, int m, int d) {
 
-            static bool isMartinLutterKingDay(const DateTime& referenceDate) {
-
-                int y = referenceDate.year(), m = referenceDate.month(), d = referenceDate.day();
                 if (m != 1) return false;
                 if (toolbox::getWeekDayFromCivilDate(y,m,d) == 1) return toolbox::getThirdWeekDayOfMonth(y,m,1)==d;
                 else return false;
             }
 
-            static bool isUSWashingtonBirthday(const DateTime& referenceDate) {
+            static bool isUSWashingtonBirthday(int y, int m, int d) {
 
-                int y = referenceDate.year(), m = referenceDate.month(), d = referenceDate.day();
                 if (m != 2) return false;
                 if (toolbox::getWeekDayFromCivilDate(y,m,d) == 1) return toolbox::getThirdWeekDayOfMonth(y,m,1)==d;
                 else return false;
             }
 
-            static bool isUSMemorialDay(const DateTime& referenceDate) {
+            static bool isUSMemorialDay(int y, int m, int d) {
 
-                int y = referenceDate.year(), m = referenceDate.month(), d = referenceDate.day();
                 if (m != 5) return false;
                 if (toolbox::getWeekDayFromCivilDate(y,m,d) == 1) return toolbox::getLastWeekDayOfMonth(y,m,1)==d;
                 else return false;
             }
 
-            static bool isUSJuneteenth(const DateTime& referenceDate) {return (referenceDate.day()==19 && referenceDate.month()==6);}
+            static bool isUSJuneteenth(int m, int d) {return (d==19 && m==6);}
 
-            static bool isUSIndependanceDay(const DateTime& referenceDate) {return (referenceDate.day()==4 && referenceDate.month()==7);}
+            static bool isUSIndependanceDay(int m, int d) {return (d==4 && m==7);}
 
-            static bool isUSLaborDay(const DateTime& referenceDate) {
+            static bool isUSLaborDay(int y, int m, int d) {
 
-                int y = referenceDate.year(), m = referenceDate.month(), d = referenceDate.day();
                 if (m != 9) return false;
                 if (toolbox::getWeekDayFromCivilDate(y,m,d) == 1) return toolbox::getFirstWeekDayOfMonth(y,m,1)==d;
                 else return false;
             }
 
-            static bool isUSColumbusDay(const DateTime& referenceDate) {
+            static bool isUSColumbusDay(int y, int m, int d) {
 
-                int y = referenceDate.year(), m = referenceDate.month(), d = referenceDate.day();
                 if (m != 10) return false;
                 if (toolbox::getWeekDayFromCivilDate(y,m,d) == 1) return toolbox::getSecondWeekDayOfMonth(y,m,1)==d;
                 else return false;
             }
 
-            static bool isUSVeteransDay(const DateTime& referenceDate) {return (referenceDate.day()==11 && referenceDate.month()==11);}
+            static bool isUSVeteransDay(int m, int d) {return (d==11 && m==11);}
 
-            static bool isThanksgivingDay(const DateTime& referenceDate) {
+            static bool isThanksgivingDay(int y, int m, int d) {
 
-                int y = referenceDate.year(), m = referenceDate.month(), d = referenceDate.day();
                 if (m != 11) return false;
                 if (toolbox::getWeekDayFromCivilDate(y,m,d) == 4) return toolbox::getFourthWeekDayOfMonth(y,m,4)==d;
                 else return false;

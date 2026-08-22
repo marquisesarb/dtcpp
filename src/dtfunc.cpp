@@ -3,66 +3,43 @@
 
 namespace dtcpp {
 
-    DateTime DateTime::switchTimestampType(EpochTimestampType type) const {
+    std::string DateTime::asString(std::string dateFormat, TimeZone timeZone) const {
 
-        if (type == type_) return *this;
-
-        long long value = tmsp_;
-        long long from = static_cast<long long>(type_);
-        long long to   = static_cast<long long>(type);
-
-        if (from < to) value *= (to / from);
-        else value /= (from / to);
-
-        return DateTime(value, type, timeZone_);
-    }
-
-    long long DateTime::timestamp() const { return tmsp_; }
-
-    EpochTimestampType DateTime::timestampType() const { return type_; }
-
-    TimeZone DateTime::timeZone() const { return timeZone_; }
-
-    std::string DateTime::asString(std::string dateFormat) const {
-
-        int tz = static_cast<int>(timeZone_);
-        std::string utcString = " UTC" + ((tz < 0) ? "-" + std::to_string(std::abs(tz)) : "+" + std::to_string(std::abs(tz)));
-        auto [y,m,d,h,mi,s] = civilTime_;
+        int tz = static_cast<int>(timeZone);
+        std::string utcString = " UTC" + ((tz < 0) ? "-" + std::to_string(std::abs(tz)) : "+" + std::to_string(std::abs(tz)));  
+        auto [y,m,d,h,mi,s] = civilTime(timeZone);
         return toolbox::getCivilDateHourStringFromCivilDateHour(y,m,d,h,mi,s,dateFormat) + utcString;
     }
 
-    void DateTime::setTimestampType(const EpochTimestampType type) {
+    std::string DateTime::asString(std::string dateFormat) const {
 
-        tmsp_ = switchTimestampType(type).timestamp(); 
-        type_ = type;
+        return asString(dateFormat,TimeZone::UTC);
     }
 
-    void DateTime::setTimeZone(TimeZone timeZone) { 
+    std::tuple<int,int,int,int,int,int> DateTime::civilTime(TimeZone timeZone) const {
 
-        civilTime_ = toolbox::getCivilFromTimestamp(
-            _getModifiedTimestamp(
-                tmsp_
-                , -static_cast<int>(timeZone)
-                , type_));
-        timeZone_ = timeZone; 
+        long long tmsp = _getModifiedTimestamp(timestamp,  EpochTimestampType::NANOSECONDS, EpochTimestampType::SECONDS); 
+        tmsp += static_cast<int>(timeZone)*3600LL;
+        return toolbox::getCivilFromTimestamp(tmsp);
     }
 
-    long long DateTime::_getModifiedTimestamp(long long tmsp, int hourOffset, EpochTimestampType type) {
+    std::tuple<int,int,int,int,int,int> DateTime::civilTime() const {
+
+        return civilTime(TimeZone::UTC);
+    }
+
+
+    long long DateTime::_getModifiedTimestamp(long long tmsp, EpochTimestampType fromType, EpochTimestampType toType) {
 
         long long value = tmsp;
-        long long from = static_cast<long long>(type);
-        long long to   = static_cast<long long>(EpochTimestampType::SECONDS);
+        long long from = static_cast<long long>(fromType);
+        long long to   = static_cast<long long>(toType);
 
         if (from < to) value *= (to / from);
         else value /= (from / to);
 
-        return value - hourOffset*3600LL;
+        return value;
     }
 
-    int DateTime::year() const { return std::get<0>(civilTime_); }
-
-    int DateTime::day() const { return std::get<2>(civilTime_); }
-
-    int DateTime::month() const { return std::get<1>(civilTime_); }
 
 }

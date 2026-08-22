@@ -35,15 +35,16 @@ namespace dtcpp {
     class DateTime {
 
         public:
-            DateTime(TimeZone timeZone);
+            long long timestamp; 
+
             DateTime();
-            DateTime(long long timestamp, EpochTimestampType type, TimeZone timeZone);
-            DateTime(long long timestamp, EpochTimestampType type);
-            DateTime(int year, int month, int day, int hour, int minute, int second, TimeZone timeZone);
-            DateTime(int year, int month, int day, TimeZone timeZone);
+            DateTime(long long timestamp_, EpochTimestampType type);
+            DateTime(long long timestamp_);
+            DateTime(int year, int month, int day, int hour, int minute, int second, TimeZone timeZone_);
+            DateTime(int year, int month, int day, TimeZone timeZone_);
+            DateTime(const std::string& dateString, const std::string& formatString, TimeZone timeZone_); 
             DateTime(int year, int month, int day, int hour, int minute, int second);
             DateTime(int year, int month, int day);
-            DateTime(const std::string& dateString, const std::string& formatString, TimeZone timeZone);
             DateTime(const std::string& dateString, const std::string& formatString); 
             ~DateTime(){};
 
@@ -67,24 +68,13 @@ namespace dtcpp {
             void operator+=(const TimeDelta::Months& other); 
             void operator-=(const TimeDelta::Months& other); 
 
-            long long timestamp() const; 
+            std::string asString(std::string dateFormat, TimeZone timeZone) const;
+            std::tuple<int,int,int,int,int,int> civilTime(TimeZone timeZone) const;
             std::string asString(std::string dateFormat) const;
-            int year() const; 
-            int day() const; 
-            int month() const; 
-            DateTime switchTimestampType(EpochTimestampType type) const;
-            EpochTimestampType timestampType() const;
-            TimeZone timeZone() const;
-
-            void setTimestampType(EpochTimestampType type);
-            void setTimeZone(TimeZone timeZone);
+            std::tuple<int,int,int,int,int,int> civilTime() const;
 
         private:
-            long long tmsp_; 
-            std::tuple<int,int,int,int,int,int> civilTime_;
-            EpochTimestampType type_; 
-            TimeZone timeZone_;
-            static long long _getModifiedTimestamp(long long tmsp, int hourOffset, EpochTimestampType type);
+            static long long _getModifiedTimestamp(long long tmsp, EpochTimestampType fromType, EpochTimestampType toType);
     };
 
 }

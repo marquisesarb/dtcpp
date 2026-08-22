@@ -39,46 +39,46 @@ int main() {
 
     dtcpp::TimeSerie<double> ts = getTimeSerie();
 
-    assert(ts[15].first.timestamp() == 1783562400000);
+    assert(ts[15].first.timestamp == 1783562400000*1'000'000LL);
     assert(ts[15].second == 62979.5);
 
     dtcpp::TimeSerie<double> seg = ts.segment(10, 5); 
 
     assert(seg.size()==5);
 
-    assert(seg[0].first.timestamp() == 1783454400000);
+    assert(seg[0].first.timestamp == 1783454400000*1'000'000LL);
     assert(seg[0].second == 63018);
 
-    assert(seg[1].first.timestamp() == 1783476000000);
+    assert(seg[1].first.timestamp == 1783476000000*1'000'000LL);
     assert(seg[1].second == 62856.5);
 
-    assert(seg[2].first.timestamp() == 1783497600000);
+    assert(seg[2].first.timestamp == 1783497600000*1'000'000LL);
     assert(seg[2].second == 61904.5);
 
-    assert(seg[3].first.timestamp() == 1783519200000);
+    assert(seg[3].first.timestamp == 1783519200000*1'000'000LL);
     assert(seg[3].second == 62244.5);
 
-    assert(seg[4].first.timestamp() == 1783540800000);
+    assert(seg[4].first.timestamp == 1783540800000*1'000'000LL);
     assert(seg[4].second == 61872);
 
 
     seg.popBack();
 
     assert(seg.size()==4);
-    assert(seg.back().first.timestamp() == 1783519200000);
+    assert(seg.back().first.timestamp == 1783519200000*1'000'000LL);
     assert(seg.back().second == 62244.5);
 
 
     seg.insert(dtcpp::DateTime(1783540800000,dtcpp::EpochTimestampType::MILLISECONDS),61872); 
 
-    assert(seg.back().first.timestamp() == 1783540800000);
+    assert(seg.back().first.timestamp == 1783540800000*1'000'000LL);
     assert(seg.back().second == 61872);
     assert(seg.size()==5);
 
     long long tmsp = .5*(1783454400000+1783476000000);
     seg.insert(dtcpp::DateTime(tmsp,dtcpp::EpochTimestampType::MILLISECONDS),.5*(63018+62856.5));
 
-    assert(seg[1].first.timestamp() == tmsp);
+    assert(seg[1].first.timestamp == tmsp*1'000'000LL);
     assert(seg[1].second == .5*(63018+62856.5));
     assert(seg.size()==6);
 

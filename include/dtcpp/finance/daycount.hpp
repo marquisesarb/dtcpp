@@ -24,7 +24,9 @@ namespace dtcpp::fin {
 
         inline TimeDelta timeInLeapYears(const DateTime& startDate, const DateTime& endDate) {
 
-            int endYear = endDate.year(), startYear = startDate.year();
+            std::tuple<int,int,int,int,int,int> endCivilTime = endDate.civilTime();
+            std::tuple<int,int,int,int,int,int> startCivilTime = startDate.civilTime();
+            int endYear = std::get<0>(endCivilTime), startYear = std::get<0>(startCivilTime);
             TimeDelta result{0,0,0,0,0,0,0};
             if (endYear == startYear) { 
                 if (toolbox::isLeapYear(endYear)) result = endDate - startDate; 
@@ -35,11 +37,11 @@ namespace dtcpp::fin {
                     
                     if (y == startYear) {
 
-                        result += DateTime(startYear+1,1,1,startDate.timeZone())-startDate;
+                        result += DateTime(startYear+1,1,1)-startDate;
 
                     } else if (y == endYear) {
 
-                        result += endDate - DateTime(endYear,1,1,startDate.timeZone());
+                        result += endDate - DateTime(endYear,1,1);
 
                     } else {
 
@@ -51,28 +53,36 @@ namespace dtcpp::fin {
             return result;
         }
 
-        inline double baseCount30360(const DateTime& startDate, const DateTime& endDate) {return 360.0*(endDate.year()-startDate.year()) + 30.0*(endDate.month()-startDate.month());}
+        inline double baseCount30360(const DateTime& startDate, const DateTime& endDate) {
+            std::tuple<int,int,int,int,int,int> endCivilTime = endDate.civilTime();
+            std::tuple<int,int,int,int,int,int> startCivilTime = startDate.civilTime();
+            return 360.0*(std::get<0>(endCivilTime)-std::get<0>(startCivilTime)) + 30.0*(std::get<1>(endCivilTime)-std::get<1>(startCivilTime));
+        }
 
-        inline double yfAct360(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds())/FACTOR360;}
-        inline double yfAct365(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds())/FACTOR365;}
-        inline double yfAct364(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds())/FACTOR364;}
+        inline double yfAct360(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds)/FACTOR360;}
+        inline double yfAct365(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds)/FACTOR365;}
+        inline double yfAct364(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds)/FACTOR364;}
 
         inline double yfActAct(const DateTime& startDate, const DateTime& endDate) {
 
-            long long leap = double(timeInLeapYears(startDate, endDate).totalNanoseconds());
-            long long total = double((endDate-startDate).totalNanoseconds()); 
+            long long leap = double(timeInLeapYears(startDate, endDate).totalNanoseconds);
+            long long total = double((endDate-startDate).totalNanoseconds); 
             return double(leap)/FACTOR366 + double(total-leap)/FACTOR365;
         } 
 
         inline double yfE30_360(const DateTime& startDate, const DateTime& endDate) {
 
-            int d2 = endDate.day(), d1 = startDate.day(); 
+            std::tuple<int,int,int,int,int,int> endCivilTime = endDate.civilTime();
+            std::tuple<int,int,int,int,int,int> startCivilTime = startDate.civilTime();
+            int d2 = std::get<2>(endCivilTime), d1 = std::get<2>(startCivilTime); 
             return (baseCount30360(startDate,endDate) + (std::min(30,d2)-std::min(30,d1)))/360.0;
         }
 
         inline double yfBondBasis30_360(const DateTime& startDate, const DateTime& endDate) {
 
-            int d2 = endDate.day(), d1 = startDate.day(); 
+            std::tuple<int,int,int,int,int,int> endCivilTime = endDate.civilTime();
+            std::tuple<int,int,int,int,int,int> startCivilTime = startDate.civilTime();
+            int d2 = std::get<2>(endCivilTime), d1 = std::get<2>(startCivilTime);  
             d1 = std::min(30,d1);
             d2 = (d1==30) ? std::min(30,d2) : d2;
             return (baseCount30360(startDate,endDate) + (d2-d1))/360.0;

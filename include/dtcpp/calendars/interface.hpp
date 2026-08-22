@@ -49,15 +49,19 @@ namespace dtcpp {
 
             DateTime adjustDateModifiedPrecedingConvention(const DateTime& referenceDate) const {
 
-                DateTime modPrec = adjustDatePrecedingConvention(referenceDate); 
-                if (modPrec.month()== referenceDate.month()) return modPrec; 
+                DateTime modPrec = adjustDatePrecedingConvention(referenceDate);
+                std::tuple<int,int,int,int,int,int> civilTime_ = referenceDate.civilTime(); 
+                std::tuple<int,int,int,int,int,int> civilTime2_ = modPrec.civilTime(); 
+                if (std::get<1>(civilTime2_)== std::get<1>(civilTime_)) return modPrec; 
                 else return adjustDateFollowingConvention(referenceDate);
             }
 
             DateTime adjustDateModifiedFollowingConvention(const DateTime& referenceDate) const {
 
                 DateTime modFol = adjustDateFollowingConvention(referenceDate); 
-                if (modFol.month() == referenceDate.month()) return modFol; 
+                std::tuple<int,int,int,int,int,int> civilTime_ = referenceDate.civilTime(); 
+                std::tuple<int,int,int,int,int,int> civilTime2_ = modFol.civilTime(); 
+                if (std::get<1>(civilTime2_)== std::get<1>(civilTime_)) return modFol; 
                 else return adjustDatePrecedingConvention(referenceDate);
             }
     };
@@ -74,7 +78,8 @@ namespace dtcpp {
         public:
             WeekEndOffCalendar(){};
             virtual bool isBusinessDay(const DateTime& referenceDate) const {
-                int wk = toolbox::getWeekDayFromCivilDate(referenceDate.year(),referenceDate.month(),referenceDate.day()); 
+                std::tuple<int,int,int,int,int,int> civilTime_ = referenceDate.civilTime();
+                int wk = toolbox::getWeekDayFromCivilDate(std::get<0>(civilTime_),std::get<1>(civilTime_),std::get<2>(civilTime_)); 
                 return (wk==6 or wk==0) ? false : true;
             }; 
     };
