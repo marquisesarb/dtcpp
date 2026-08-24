@@ -10,33 +10,37 @@ namespace dtcpp::fin {
     class BondScheduler: public TimeSequence {
 
         public: 
-            dtcpp::DateTime startDate; 
-            Tenor frequencyTenor; 
-            Tenor maturityTenor; 
-            BusinessDayConvention businessDayConvention; 
-            std::shared_ptr<BusinessCalendar> businessCalendarPtr; 
-
             BondScheduler(
-                const dtcpp::DateTime& startDate_, 
+                const DateTime& startDate_, 
                 Tenor frequencyTenor_, 
                 Tenor maturityTenor_,
                 BusinessDayConvention businessDayConvention_,
                 const std::shared_ptr<BusinessCalendar>& businessCalendarPtr_): 
-            TimeSequence(), startDate(startDate_), frequencyTenor(frequencyTenor_), maturityTenor(maturityTenor_), 
-            businessDayConvention(businessDayConvention_), businessCalendarPtr(businessCalendarPtr_) {
+            TimeSequence(), _startDate(startDate_), _frequencyTenor(frequencyTenor_), _maturityTenor(maturityTenor_), 
+            _businessDayConvention(businessDayConvention_), _businessCalendarPtr(businessCalendarPtr_) {
 
-                int n = maturityTenor.getMultiple(frequencyTenor); 
+                int n = _maturityTenor.getMultiple(_frequencyTenor); 
 
                 for (int i = 0; i<n-1; i++) {
 
-                    DateTime unadjustedDate = frequencyTenor.getForwardDate(startDate, i+1);
-                    insert(businessCalendarPtr->adjustForBusiness(unadjustedDate, businessDayConvention));
+                    DateTime unadjustedDate = _frequencyTenor.getForwardDate(_startDate, i+1);
+                    insert(_businessCalendarPtr->adjustForBusiness(unadjustedDate, _businessDayConvention));
                 }
             }
 
-            dtcpp::DateTime maturityDate() const {return businessCalendarPtr->adjustForBusiness(maturityTenor.getForwardDate(startDate, 1), businessDayConvention);}
+            DateTime maturityDate() const {return _businessCalendarPtr->adjustForBusiness(_maturityTenor.getForwardDate(_startDate, 1), _businessDayConvention);}
+            DateTime startDate() const {return _startDate;}
+            Tenor frequencyTenor() const {return _frequencyTenor;}
+            Tenor maturityTenor() const {return _maturityTenor;}
+            BusinessDayConvention businessDayConvention() const {return _businessDayConvention;}
+            std::shared_ptr<BusinessCalendar> businessCalendarPtr() const {return _businessCalendarPtr;}
 
-            
+        private:
+            DateTime _startDate; 
+            Tenor _frequencyTenor; 
+            Tenor _maturityTenor; 
+            BusinessDayConvention _businessDayConvention; 
+            std::shared_ptr<BusinessCalendar> _businessCalendarPtr; 
 
     };
 

@@ -8,7 +8,7 @@ void templateTestAdjBusinessDay(const BusinessCalendar& calendar, const Business
     for (int i = 0; i<result.size(); i++) {
 
         DateTime newDateTime = calendar.adjustForBusiness(DateTime(raw[i], EpochTimestampType::SECONDS), bdc);
-        assert(newDateTime.timestamp == result[i]*1'000'000'000LL);
+        assert(newDateTime.timestamp() == result[i]*1'000'000'000LL);
     }
 }
 

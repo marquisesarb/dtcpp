@@ -17,7 +17,7 @@ int main() {
     assert(schedule[7] == DateTime(2028,1,30)); 
     assert(schedule[12] == DateTime(2029,4,30));
     assert(schedule[13] == DateTime(2029,7,30));
-    assert(schedule.startDate == startDate); 
+    assert(schedule.startDate() == startDate); 
     assert(schedule.maturityDate() == DateTime(2031,1,30));
 
     tenorFreq = {7,TenorType::MONTHS};

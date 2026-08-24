@@ -59,14 +59,14 @@ namespace dtcpp::fin {
             return 360.0*(std::get<0>(endCivilTime)-std::get<0>(startCivilTime)) + 30.0*(std::get<1>(endCivilTime)-std::get<1>(startCivilTime));
         }
 
-        inline double yfAct360(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds)/FACTOR360;}
-        inline double yfAct365(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds)/FACTOR365;}
-        inline double yfAct364(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds)/FACTOR364;}
+        inline double yfAct360(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds())/FACTOR360;}
+        inline double yfAct365(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds())/FACTOR365;}
+        inline double yfAct364(const DateTime& startDate, const DateTime& endDate) {return double((endDate-startDate).totalNanoseconds())/FACTOR364;}
 
         inline double yfActAct(const DateTime& startDate, const DateTime& endDate) {
 
-            long long leap = double(timeInLeapYears(startDate, endDate).totalNanoseconds);
-            long long total = double((endDate-startDate).totalNanoseconds); 
+            long long leap = double(timeInLeapYears(startDate, endDate).totalNanoseconds());
+            long long total = double((endDate-startDate).totalNanoseconds()); 
             return double(leap)/FACTOR366 + double(total-leap)/FACTOR365;
         } 
 

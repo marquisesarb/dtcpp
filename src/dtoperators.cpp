@@ -5,49 +5,49 @@ namespace dtcpp {
 
     DateTime DateTime::operator+(const TimeDelta& other) const {
 
-        return DateTime(timestamp+other.totalNanoseconds);
+        return DateTime(timestamp()+other.totalNanoseconds());
     }
 
     DateTime DateTime::operator-(const TimeDelta& other) const {
 
-        return DateTime(timestamp-other.totalNanoseconds);
+        return DateTime(timestamp()-other.totalNanoseconds());
     }
 
     TimeDelta DateTime::operator-(const DateTime& other) const {
 
-        return {timestamp-other.timestamp};
+        return {timestamp()-other.timestamp()};
     }
 
     void DateTime::operator+=(const TimeDelta& other){ 
-        timestamp += other.totalNanoseconds;
+        _timestamp += other.totalNanoseconds();
     }
 
     void DateTime::operator-=(const TimeDelta& other){ 
-        timestamp -= other.totalNanoseconds;
+        _timestamp -= other.totalNanoseconds();
     }
 
     bool DateTime::operator==(const DateTime& other) const {
-        return (timestamp==other.timestamp);
+        return (timestamp()==other.timestamp());
     }
 
     bool DateTime::operator<(const DateTime& other) const {
-        return (timestamp<other.timestamp);
+        return (timestamp()<other.timestamp());
     }
 
     bool DateTime::operator<=(const DateTime& other) const {
-        return (timestamp<=other.timestamp);
+        return (timestamp()<=other.timestamp());
     }
 
     bool DateTime::operator!=(const DateTime& other) const {
-        return (timestamp!=other.timestamp);
+        return (timestamp()!=other.timestamp());
     }
 
     bool DateTime::operator>(const DateTime& other) const {
-        return (timestamp>other.timestamp);
+        return (timestamp()>other.timestamp());
     }
 
     bool DateTime::operator>=(const DateTime& other) const {
-        return (timestamp>=other.timestamp);
+        return (timestamp()>=other.timestamp());
     }
 
     DateTime DateTime::operator+(const TimeDelta::Years& other) const {
@@ -87,19 +87,19 @@ namespace dtcpp {
     }
 
     void DateTime::operator+=(const TimeDelta::Years& other){
-        timestamp = operator+(other).timestamp;         
+        _timestamp = operator+(other).timestamp();         
     }
 
     void DateTime::operator-=(const TimeDelta::Years& other) {
-        timestamp = operator-(other).timestamp;   
+        _timestamp = operator-(other).timestamp();   
     }
 
     void DateTime::operator+=(const TimeDelta::Months& other){
-        timestamp = operator+(other).timestamp;         
+        _timestamp = operator+(other).timestamp();         
     }
 
     void DateTime::operator-=(const TimeDelta::Months& other) {
-        timestamp = operator-(other).timestamp;   
+        _timestamp = operator-(other).timestamp();   
     }
 
 

@@ -35,8 +35,6 @@ namespace dtcpp {
     class DateTime {
 
         public:
-            long long timestamp; 
-
             DateTime();
             DateTime(long long timestamp_, EpochTimestampType type);
             DateTime(long long timestamp_);
@@ -68,12 +66,15 @@ namespace dtcpp {
             void operator+=(const TimeDelta::Months& other); 
             void operator-=(const TimeDelta::Months& other); 
 
+            long long timestamp() const {return _timestamp;}
+
             std::string asString(std::string dateFormat, TimeZone timeZone) const;
             std::tuple<int,int,int,int,int,int> civilTime(TimeZone timeZone) const;
             std::string asString(std::string dateFormat) const;
             std::tuple<int,int,int,int,int,int> civilTime() const;
 
         private:
+            long long _timestamp; 
             static long long _getModifiedTimestamp(long long tmsp, EpochTimestampType fromType, EpochTimestampType toType);
     };
 

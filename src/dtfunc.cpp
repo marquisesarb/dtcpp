@@ -18,7 +18,7 @@ namespace dtcpp {
 
     std::tuple<int,int,int,int,int,int> DateTime::civilTime(TimeZone timeZone) const {
 
-        long long tmsp = _getModifiedTimestamp(timestamp,  EpochTimestampType::NANOSECONDS, EpochTimestampType::SECONDS); 
+        long long tmsp = _getModifiedTimestamp(timestamp(),  EpochTimestampType::NANOSECONDS, EpochTimestampType::SECONDS); 
         tmsp += static_cast<int>(timeZone)*3600LL;
         return toolbox::getCivilFromTimestamp(tmsp);
     }
