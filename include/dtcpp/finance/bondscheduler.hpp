@@ -6,7 +6,6 @@
 
 namespace dtcpp::fin {
 
-
     class BondScheduler: public TimeSequence {
 
         public: 
