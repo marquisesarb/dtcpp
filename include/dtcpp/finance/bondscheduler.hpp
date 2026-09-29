@@ -11,12 +11,12 @@ namespace dtcpp::fin {
 
         public: 
             BondScheduler(
-                const DateTime& startDate_, 
+                DateTime startDate_, 
                 Tenor frequencyTenor_, 
                 Tenor maturityTenor_,
                 BusinessDayConvention businessDayConvention_,
                 const std::shared_ptr<BusinessCalendar>& businessCalendarPtr_): 
-            TimeSequence(), _startDate(startDate_), _frequencyTenor(frequencyTenor_), _maturityTenor(maturityTenor_), 
+            TimeSequence(), _startDate(std::move(startDate_)), _frequencyTenor(frequencyTenor_), _maturityTenor(maturityTenor_), 
             _businessDayConvention(businessDayConvention_), _businessCalendarPtr(businessCalendarPtr_) {
 
                 int n = _maturityTenor.getMultiple(_frequencyTenor); 

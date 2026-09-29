@@ -1,10 +1,8 @@
 #pragma once
 #include <dtcpp/datetime.hpp>
 #include <vector>
-#include <set>
 
 namespace dtcpp {
-
 
     class TimeSequence {
 
@@ -12,52 +10,53 @@ namespace dtcpp {
 
             TimeSequence(){};
 
-            TimeSequence(const std::vector<dtcpp::DateTime>& sequence) {
-
-                seq = std::vector<dtcpp::DateTime>(sequence.size());
-
-                for (const dtcpp::DateTime& d: sequence) {
-                    insert(d);
-                }
-
-            };
-
-            TimeSequence(const std::set<dtcpp::DateTime>& sequence) {
-
-                for(const dtcpp::DateTime& d: sequence) {insert(d);}   
-            }
-
             virtual ~TimeSequence() = default;
 
             dtcpp::DateTime operator[](size_t i) const {return seq[i];}
+
             dtcpp::DateTime back() const {return seq.back();}
+
             dtcpp::DateTime front() const {return seq.front();}
+
             size_t size() const {return seq.size();}
-            bool isEmpty() const {return seq.empty();}
+
+            bool empty() const {return seq.empty();}
+
             bool contains(const dtcpp::DateTime& date) {return (std::find(seq.begin(), seq.end(), date) != seq.end());}
 
             void insert(const dtcpp::DateTime& date) {
 
-                if (seq.empty()) seq.push_back(date);
-                else {
-                    if (date < seq.front()) {seq.insert(seq.begin(), date);}
-                    else if (date > seq.back()) {seq.push_back(date);}
-                    else {
-                        auto it = std::lower_bound(seq.begin(), seq.end(), date);
-                        size_t i = it - seq.begin();
-                        if (date != seq[i]) {
+                //if (seq.empty()) seq.push_back(date);
+                //else {
+                //    if (date < seq.front()) {seq.insert(seq.begin(), date);}
+                //    else if (date > seq.back()) {seq.push_back(date);}
+                //    else {
+                //        auto it = std::lower_bound(seq.begin(), seq.end(), date);
+                //        size_t i = it - seq.begin();
+                //        if (date != seq[i]) {
 
-                            seq.insert(seq.begin() + i, date);
-                        }
-                    }
+                //            seq.insert(seq.begin() + i, date);
+                //        }
+                //    }
+                //}
+
+                auto it = std::lower_bound(seq.begin(), seq.end(), date);
+                if (!seq.empty() && date != *it) {
+
+                    seq.insert(it, date);
+
+                } else if (seq.empty()) {
+
+                    seq.push_back(date);
                 }
                 
             }
 
             void erase(size_t i) {seq.erase(seq.begin()+i);}
-            void erase(const dtcpp::DateTime& date) {size_t i = index(date); if (i!=-1) erase(i);}
-            void popBack() {seq.pop_back();}
 
+            void erase(const dtcpp::DateTime& date) {size_t i = index(date); if (i!=-1) erase(i);}
+
+            void popBack() {seq.pop_back();}
 
             TimeSequence segment(size_t startIndex, size_t n) const {
 
@@ -77,8 +76,14 @@ namespace dtcpp {
             TimeSequence segment(const dtcpp::DateTime& startDate, const dtcpp::DateTime& endDate) const {
 
                 size_t istart = index(startDate); 
-                size_t iend = index(endDate);
-                return segment(istart, iend-istart+1);
+                TimeSequence newts = TimeSequence(); 
+                for (size_t i = istart; i<seq.size(); i++) {
+
+                    if (seq[i]<=endDate) newts.insert(seq[i]);
+                    else break;
+                }
+                return newts;
+
             }
 
             size_t index(const dtcpp::DateTime& date) const {
@@ -107,23 +112,11 @@ namespace dtcpp {
                 TimeDelta dtmax{}; 
                 TimeDelta dtmin{};
                 
-                for (size_t i = 0; i<size();i++) {
+                for (size_t i = 1; i<size();i++) {
 
-                    if (i==0) {
+                    dtmax = (i==1) ? seq[i]-seq[i-1] : std::max(dtmax,seq[i]-seq[i-1]);
+                    dtmin = (i==1) ? seq[i]-seq[i-1] : std::min(dtmin,seq[i]-seq[i-1]);
 
-                        continue; 
-
-                    } else if (i==1) {
-
-                        dtmax = seq[i]-seq[i-1];
-                        dtmin = seq[i]-seq[i-1];
-
-                    } else {
-
-                        dtmax = std::max(dtmax,seq[i]-seq[i-1]);
-                        dtmin = std::min(dtmin,seq[i]-seq[i-1]);
-
-                    }
                 }
 
                 return std::make_pair(dtmin,dtmax);

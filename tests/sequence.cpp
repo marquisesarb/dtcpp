@@ -5,7 +5,7 @@
 dtcpp::TimeSequence getTimeSequence() {
 
     
-    std::set<int> timestampsVector = {
+    std::vector<int> timestampsVector = {
         1761868800, 1777507200, 1793318400, 1809043200, 1824854400,
         1840665600, 1856476800, 1872201600, 1888012800, 1903737600,
         1919548800, 1935273600, 1951084800, 1966896000, 1982707200,

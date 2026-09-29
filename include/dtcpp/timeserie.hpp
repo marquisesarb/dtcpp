@@ -2,7 +2,6 @@
 #include <dtcpp/datetime.hpp>
 #include <vector>
 #include <utility>
-#include <map>
 
 namespace dtcpp {
 
@@ -12,19 +11,16 @@ namespace dtcpp {
         public: 
             TimeSerie() {}; 
 
-            TimeSerie(const std::map<dtcpp::DateTime,T>& points) {
-
-                for (const auto [k,v]: points) {
-
-                    insert(k,v);
-                }
-            }
-
             std::pair<DateTime, T> operator[](size_t i) const {return std::make_pair(dateSeq[i], dataSeq[i]);}
+
             std::pair<DateTime, T> back() const {return std::make_pair(dateSeq.back(), dataSeq.back());}
+
             std::pair<DateTime, T> front() const {return std::make_pair(dateSeq.front(), dataSeq.front());}
+
             size_t size() const {return dateSeq.size();}
+
             bool isEmpty() const {return dateSeq.empty();}
+
             bool contains(const dtcpp::DateTime& date) {return (std::find(dateSeq.begin(), dateSeq.end(), date) != dateSeq.end());}
 
             size_t index(const dtcpp::DateTime& date) const {
@@ -49,7 +45,9 @@ namespace dtcpp {
             }
 
             void popBack() {dateSeq.pop_back();dataSeq.pop_back();}
+
             void erase(size_t i) {dateSeq.erase(dateSeq.begin()+i); dataSeq.erase(dataSeq.begin()+i);}
+
             void erase(const dtcpp::DateTime& date) {size_t i = index(date); if (i!=-1) erase(i);}
 
             void insert(const std::pair<dtcpp::DateTime, T>& point) {
@@ -68,7 +66,6 @@ namespace dtcpp {
                         }
                     }
                 }
-                
             }
 
             void insert(const dtcpp::DateTime& datePoint, const T& dataPoint) {
@@ -94,8 +91,13 @@ namespace dtcpp {
             TimeSerie<T> segment(const dtcpp::DateTime& startDate, const dtcpp::DateTime& endDate) const {
 
                 size_t istart = index(startDate); 
-                size_t iend = index(endDate);
-                return segment(istart, iend-istart+1);
+                TimeSerie<T> newts = TimeSerie<T>();
+                for (size_t i = istart; i<dateSeq.size(); i++) {
+
+                    if (dateSeq[i]<=endDate) newts.insert(std::make_pair(dateSeq[i], dataSeq[i]));
+                    else break;
+                }
+                return newts;
             }
 
             std::pair<TimeDelta,TimeDelta> minMaxTimeDelta() const {
@@ -103,23 +105,11 @@ namespace dtcpp {
                 TimeDelta dtmax{}; 
                 TimeDelta dtmin{};
                 
-                for (size_t i = 0; i<size();i++) {
+                for (size_t i = 1; i<size();i++) {
 
-                    if (i==0) {
+                    dtmax = (i==1) ? dateSeq[i]-dateSeq[i-1] : std::max(dtmax,dateSeq[i]-dateSeq[i-1]);
+                    dtmin = (i==1) ? dateSeq[i]-dateSeq[i-1] : std::min(dtmin,dateSeq[i]-dateSeq[i-1]);
 
-                        continue; 
-
-                    } else if (i==1) {
-
-                        dtmax = dateSeq[i]-dateSeq[i-1];
-                        dtmin = dateSeq[i]-dateSeq[i-1];
-
-                    } else {
-
-                        dtmax = std::max(dtmax,dateSeq[i]-dateSeq[i-1]);
-                        dtmin = std::min(dtmin,dateSeq[i]-dateSeq[i-1]);
-
-                    }
                 }
 
                 return std::make_pair(dtmin,dtmax);
