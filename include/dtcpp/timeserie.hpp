@@ -116,7 +116,7 @@ namespace dtcpp {
 
             }
 
-        private: 
+        protected: 
             std::vector<dtcpp::DateTime> dateSeq; 
             std::vector<T> dataSeq; 
 
