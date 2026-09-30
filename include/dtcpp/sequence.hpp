@@ -123,7 +123,7 @@ namespace dtcpp {
 
             }
 
-        private: 
+        protected: 
             std::vector<dtcpp::DateTime> seq; 
     };
 

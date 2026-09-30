@@ -37,7 +37,7 @@ namespace dtcpp {
 
             long long totalNanoseconds() const {return _totalNanoseconds;}
 
-        private: 
+        protected: 
             long long _totalNanoseconds;
             
     }; 
